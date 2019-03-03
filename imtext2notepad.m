@@ -22,7 +22,7 @@ function varargout = imtext2notepad(varargin)
 
 % Edit the above text to modify the response to help imtext2notepad
 
-% Last Modified by GUIDE v2.5 03-Mar-2019 14:36:45
+% Last Modified by GUIDE v2.5 03-Mar-2019 16:54:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -73,6 +73,7 @@ function varargout = imtext2notepad_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
+
 % --- Executes on button press in LoadAndDisplayImage.
 function LoadAndDisplayImage_Callback(hObject, eventdata, handles)
 % hObject    handle to LoadAndDisplayImage (see GCBO)
@@ -81,8 +82,6 @@ function LoadAndDisplayImage_Callback(hObject, eventdata, handles)
 % Load:
 [file_name, path_name] = uigetfile('*');
 full_path = [path_name '\' file_name];
-path_name = path_name;
-file_name = file_name;
 handles.im_original = imread(full_path);
 
 % Display:
@@ -99,15 +98,27 @@ function ConvertToNotePad_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-
 user_response = savedlg('Title', 'Confirm Save');
 switch user_response
     case {'No'}
         % no
     case 'Yes'
+        
+        exBW=imbinarize(handles.im_original); %making pic binary.
+        exBW=exBW(:,:,1);     %making pic one dimentional.
+        exBWinv=1.-exBW;      %inverting black and white.
+        exBWlabel=bwlabel(exBWinv); %labeling all letters
+
+        textReader;
+            
+        
+        
         [fileName, pathname] = uiputfile([path,'/*.txt'], 'Save as');
         newNotePad = fopen(fileName, 'a');
-        fprintf(newNotePad, 'hi');
+       
+        for x=1 : length(str)
+            fprintf(newNotePad, string(str(1,x)));
+            
+        end
         fclose(newNotePad);
 end
-

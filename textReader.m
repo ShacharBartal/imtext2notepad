@@ -18,20 +18,20 @@ Datacell=cell([70 3]);
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
     A=databaseBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
-    Datacell(k,:)={A,size(A),Dictionarycell(k, 3)};
+    B=DictionaryCell(k, :);
+    Datacell(k,:)={A,size(A),B(2)};
 end
 
 %now reading our example
-ex = imread('ex1.png');
-exBW=imbinarize(ex); %making pic binary.
-exBW=exBW(:,:,1);     %making pic one dimentional.
-exBWinv=1.-exBW;      %inverting black and white.
-exBWlabel=bwlabel(exBWinv); %labeling all letters
+[1:8,7:9]
+
+
+
 
 %Excell will hold matrix of each letter.
 bboxes = regionprops(exBWlabel,'BoundingBox');
 exBWlabel=int64(exBWlabel);
-Excell=cell([70 2]);
+Excell=cell([length(bboxes) 2]);
 
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
@@ -39,8 +39,23 @@ for k=1 : length(bboxes)
     Excell(k,:)={A,size(A)};
 end
 
+%the main check
 
-
+str=cell(length(Excell(1)));
+index=1;
+for k=1 : length(Excell)
+    for j=1 : length(Datacell)
+        C=cell2mat( Excell(k,2))== cell2mat( Datacell(j,2));
+        if (C(1,1)+C(1,2)==2) 
+            s=Datacell(j,3);
+            
+           str(index)=s(1);
+           
+           index=index+1;
+        end      
+       
+    end
+end
 % a function that combines 2 part letter together like in "i"
 % combines the dot with the line
 function database = comb(database)
