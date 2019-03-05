@@ -18,14 +18,17 @@ Datacell=cell([70 3]);
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
     A=databaseBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
+    A = imresize(int32(A), [100,100]);
+
+    
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
-
-%now reading our example
-[1:8,7:9]
-
-
+ex =imread('ex1.png');
+        exBW=imbinarize(ex); %making pic binary.
+        exBW=exBW(:,:,1);     %making pic one dimentional.
+        exBWinv=1.-exBW;      %inverting black and white.
+        exBWlabel=bwlabel(exBWinv); %labeling all letters
 
 
 %Excell will hold matrix of each letter.
