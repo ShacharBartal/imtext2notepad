@@ -49,10 +49,8 @@ end
 %the main check
 
 str=cell(length(Excell(1)));
-indexToWrite=1;
-
+index=1;
 for k=1 : length(Excell)
-    curLetterToWrite = Datacell(1,3);
     max=0;
     for j=1 : length(Datacell)
        tempMax = 0;
@@ -62,23 +60,19 @@ for k=1 : length(Excell)
        for r=1 : 100
            for c=1 : 100
              numFromInput = letterFromInput(r,c);
-             numFromOutput = letterFromDataBase(r,c);
+             numFromOutput = letterFromOutput(r,c);
              
-             if numFromInput == numFromOutput || (numFromInput ~= 0 && numFromOutput ~= 0)
-                tempMax = tempMax + 1;
-             end
-           end
-       end
-       
-       if tempMax > max
-           max = tempMax;
-           curLetterToWrite = Datacell(j,3);
-       end
+             if numFromInput == numFromOutput || 
+             
+  C= letterFromDataBase == letterFromInput;
+        if (C(1,1)+C(1,2)==2) 
+        
+           s=Datacell(j,3);
+           str(index)=s(1);           
+           index=index+1;
+        end
     end
-    str(indexToWrite)=curLetterToWrite(1);           
-    indexToWrite = indexToWrite+1;
 end
-
 % a function that combines 2 part letter together like in "i"
 % combines the dot with the line
 
