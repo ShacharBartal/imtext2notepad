@@ -24,7 +24,7 @@ for k=1 : length(bboxes)
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
-ex =imread('ex1.png');
+ex =imread('ex4.jpeg');
         exBW=imbinarize(ex); %making pic binary.
         exBW=exBW(:,:,1);     %making pic one dimentional.
         exBWinv=1.-exBW;      %inverting black and white.
@@ -35,14 +35,29 @@ ex =imread('ex1.png');
 bboxes = regionprops(exBWlabel,'BoundingBox');
 exBWlabel=int64(exBWlabel);
 Excell=cell([length(bboxes) 2]);
-
+temp=[2 2];
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
     A=exBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
+   
+    A = A*100;
+    
     
     A = imresize(int32(A), [100,100]);
-    B=DictionaryCell(k, :);
+    for i=1:100
+        for j=1:100
+            if A(i,j) >= 50
+                A(i,j) = 1;
+            else
+                A(i,j) = 0;
+            end
+        end
+    end
+    %B=DictionaryCell(k, :);
     
+    
+    
+    temp = A;
     Excell(k,:)={A,size(A)};
 end
 
@@ -50,7 +65,7 @@ end
 
 str=cell(length(Excell(1)));
 indexToWrite=1;
-
+eight = Datacell(1,1);
 for k=1 : length(Excell)
     curLetterToWrite = Datacell(1,3);
     max=0;
@@ -64,7 +79,7 @@ for k=1 : length(Excell)
              numFromInput = letterFromInput(r,c);
              numFromOutput = letterFromDataBase(r,c);
              
-             if numFromInput == numFromOutput || (numFromInput ~= 0 && numFromOutput ~= 0)
+             if (numFromInput == 0 && numFromOutput == 0) || (numFromInput ~= 0 && numFromOutput ~= 0)
                 tempMax = tempMax + 1;
              end
            end
@@ -73,9 +88,14 @@ for k=1 : length(Excell)
        if tempMax > max
            max = tempMax;
            curLetterToWrite = Datacell(j,3);
+           
        end
     end
+    
     str(indexToWrite)=curLetterToWrite(1);           
+    if indexToWrite == 7
+           eight = letterFromInput;
+    end
     indexToWrite = indexToWrite+1;
 end
 
