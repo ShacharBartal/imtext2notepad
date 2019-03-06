@@ -18,30 +18,53 @@ Datacell=cell([70 3]);
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
     A=databaseBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
+    
+    
+    
+    
     A = imresize(int32(A), [100,100]);
-
+    A = A*100;
+    %for i=1:100
+        %for j=1:100
+          %  if A(i,j) >= 50
+         %       A(i,j) = 1;
+        %    else
+       %         A(i,j) = 0;
+      %      end
+     %   end
+    % end
     
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
-ex =imread('ex4.jpeg');
-        exBW=imbinarize(ex); %making pic binary.
-        exBW=exBW(:,:,1);     %making pic one dimentional.
-        exBWinv=1.-exBW;      %inverting black and white.
-        exBWlabel=bwlabel(exBWinv); %labeling all letters
+ex =imread('ex7.jpeg');
+        exBW=imbinarize(ex);        % making pic binary.
+        exBW=exBW(:,:,1);           % making pic one dimentional.
+        exBWinv=1.-exBW;            % inverting black and white.
+        exBWlabel=bwlabel(exBWinv); % labeling all letters
 
-
+        
+        
 %Excell will hold matrix of each letter.
+
+
 bboxes = regionprops(exBWlabel,'BoundingBox');
+centers= regionprops(exBWlabel,'Centroid');
 exBWlabel=int64(exBWlabel);
-Excell=cell([length(bboxes) 2]);
-temp=[2 2];
+Excell=cell([length(bboxes) 3]);
+
+%finding range of line by using first letter range
+currBB = bboxes(1).BoundingBox;
+cent= centers(1).Centroid;
+range= currBB(4)/2;
+firstYpos=round(cent(2));
+
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
+    currCenter=centers(k).Centroid;
     A=exBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
    
     A = A*100;
-    
     
     A = imresize(int32(A), [100,100]);
     for i=1:100
@@ -55,17 +78,21 @@ for k=1 : length(bboxes)
     end
     %B=DictionaryCell(k, :);
     
-    
-    
     temp = A;
-    Excell(k,:)={A,size(A)};
+    if currCenter(2)-range < firstYpos && currCenter(2)+range > firstYpos
+    Excell(k,:)={A,size(A),firstYpos};
+    
+        
+    end
+
+          
 end
 
 %the main check
 
 str=cell(length(Excell(1)));
 indexToWrite=1;
-eight = Datacell(1,1);
+
 for k=1 : length(Excell)
     curLetterToWrite = Datacell(1,3);
     max=0;
@@ -73,7 +100,9 @@ for k=1 : length(Excell)
        tempMax = 0;
        letterFromInput = cell2mat( Excell(k,1));
        letterFromDataBase = cell2mat( Datacell(j,1));
-        
+        if j == 52
+            stop = true;
+        end
        for r=1 : 100
            for c=1 : 100
              numFromInput = letterFromInput(r,c);
@@ -93,9 +122,6 @@ for k=1 : length(Excell)
     end
     
     str(indexToWrite)=curLetterToWrite(1);           
-    if indexToWrite == 7
-           eight = letterFromInput;
-    end
     indexToWrite = indexToWrite+1;
 end
 
