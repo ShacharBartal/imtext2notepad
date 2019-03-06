@@ -56,8 +56,12 @@ Excell=cell([length(bboxes) 3]);
 %finding range of line by using first letter range
 currBB = bboxes(1).BoundingBox;
 cent= centers(1).Centroid;
-range= currBB(4)/2;
-firstYpos=round(cent(2));
+range= currBB(4)/4*3;
+
+firstYpos=round(cent);
+nextYpos=[0 0];
+
+outOfRange=0;
 
 for k=1 : length(bboxes)
     currBB = bboxes(k).BoundingBox;
@@ -79,14 +83,59 @@ for k=1 : length(bboxes)
     %B=DictionaryCell(k, :);
     
     temp = A;
-    if currCenter(2)-range < firstYpos && currCenter(2)+range > firstYpos
+    if currCenter(2)-range < firstYpos(2) && currCenter(2)+range > firstYpos(2)
     Excell(k,:)={A,size(A),firstYpos};
-    
-        
+    else
+        Excell(k,:)={A,size(A),round(currCenter)};
+        outOfRange= outOfRange+1;  
+        nextYpos=round(currCenter);
     end
 
           
 end
+
+pastY = [firstYpos];
+
+while (outOfRange >1)
+    
+    outOfRange = 0;
+    firstYpos= nextYpos;
+    addToPastY=0;
+    for k=1 : length(bboxes)
+
+       % currBB = bboxes(k).BoundingBox;
+       % currCenter=centers(k).Centroid;
+       currCenter=Excell{k,3};
+        if k==2
+            stop=1;
+        end
+        
+        goIn=1;
+    
+    for i=1 : length(pastY(:,1))
+        if (round(currCenter(2)) == pastY(i,2))
+            goIn = 0;
+        end
+    end
+    
+    if goIn == 1
+            if currCenter(2)-range < firstYpos(2) && currCenter(2)+range > firstYpos(2) 
+              Excell(k,3)={round(firstYpos)};
+            else
+                
+                addToPastY = 1;
+                nextYpos=round(currCenter);
+                % Excell(k,:)={A,size(A),round(currCenter)};
+                outOfRange= outOfRange+1;    
+            end    
+        end
+    end
+    if addToPastY == 1
+        pastY = [pastY; nextYpos];
+        addToPastY=0;
+    end
+end
+
 
 %the main check
 
@@ -100,9 +149,7 @@ for k=1 : length(Excell)
        tempMax = 0;
        letterFromInput = cell2mat( Excell(k,1));
        letterFromDataBase = cell2mat( Datacell(j,1));
-        if j == 52
-            stop = true;
-        end
+        
        for r=1 : 100
            for c=1 : 100
              numFromInput = letterFromInput(r,c);
