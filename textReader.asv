@@ -20,10 +20,10 @@ for k=1 : length(bboxes)
     A=databaseBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
     
     
-   % A= im2BW(A(:,:,1),0.5);
-    A = A*100;
-    A = imresize(int32(A), [100,100]);
     
+    
+    A = imresize(int32(A), [100,100]);
+    A = A*100;
     for i=1:100
         for j=1:100
             if A(i,j) >= 99
@@ -146,13 +146,12 @@ sum=0;
 divide_by=1;
 for k=1 : length(Excell_sorted)-1
     if Excell_sorted{k,3}<Excell_sorted{k+1,3}
-        sum=sum+ Excell_sorted{k+1,3} - Excell_sorted{k,3};
+        sum=sum+ Excell_sorted{k,3} - Excell_sorted{k+1,3};
         divide_by=divide_by+1;
     end
     
 end
 spaceLength=sum/divide_by;
-spaceLength=spaceLength*1.4;
 
 indexToWrite=1;
 
@@ -186,15 +185,9 @@ for k=1 : length(Excell_sorted)
     indexToWrite = indexToWrite+1;
     
     %adding space if necassery
-    if k < length(Excell_sorted)
-        if Excell_sorted{k,3} > Excell_sorted{k+1,3}
-             str(indexToWrite)={' '};           
+    if Excell_sorted{k,3}+spaceLength < Excell_sorted{k,4}
+         str(indexToWrite)=' ';           
          indexToWrite = indexToWrite+1;
-        end
-      if Excell_sorted{k,3}+spaceLength < Excell_sorted{k+1,3}
-         str(indexToWrite)={' '};           
-         indexToWrite = indexToWrite+1;
-      end
     end
 end
 
