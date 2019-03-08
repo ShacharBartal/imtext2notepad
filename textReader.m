@@ -20,16 +20,18 @@ for k=1 : length(bboxes)
     A=databaseBWlabel(int64(currBB(2)):int64(currBB(2)+currBB(4)) ,int64(currBB(1)):int64(currBB(1)+currBB(3)));
     
     
-   % A= im2BW(A(:,:,1),0.5);
+    
     A = A*100;
     A = imresize(int32(A), [100,100]);
-    
+  %  A = medfilt2(A);
     for i=1:100
         for j=1:100
-            if A(i,j) >= 99
-                A(i,j) = 1;
+             if A(i,j) >= k*50
+           % if A(i,j) >= 99
+           % if A(i,j) > 0
+              A(i,j) = 1;
             else
-                A(i,j) = 0;
+               A(i,j) = 0;
             end
         end
      end
@@ -37,11 +39,11 @@ for k=1 : length(bboxes)
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
-        ex =imread('ex8.jpeg');
-        exBW=imbinarize(ex);        % making pic binary.
-        exBW=exBW(:,:,1);           % making pic one dimentional.
-        exBWinv=1.-exBW;            % inverting black and white.
-        exBWlabel=bwlabel(exBWinv); % labeling all letters
+       % ex =imread('database_Ariel20_pic.docx.png');
+      %  exBW=imbinarize(ex);        % making pic binary.
+      %  exBW=exBW(:,:,1);           % making pic one dimentional.
+      %  exBWinv=1.-exBW;            % inverting black and white.
+       % exBWlabel=bwlabel(exBWinv); % labeling all letters
 
         
         
@@ -56,7 +58,9 @@ Excell=cell([length(bboxes) 5]);
 %finding range of line by using first letter range
 currBB = bboxes(1).BoundingBox;
 cent= centers(1).Centroid;
-range= currBB(4)/4*3;
+%range= currBB(4)/4*3;
+range= currBB(4);
+
 
 firstYpos=round(cent);
 nextYpos=[0 0];
@@ -71,9 +75,12 @@ for k=1 : length(bboxes)
     A = A*100;
     
     A = imresize(int32(A), [100,100]);
+  %   A = medfilt2(A);
     for i=1:100
         for j=1:100
-            if A(i,j) >= 99
+           % if A(i,j) >= k*25
+           %if A(i,j) >= 99
+            if A(i,j) > 0
                 A(i,j) = 1;
             else
                 A(i,j) = 0;
@@ -152,7 +159,7 @@ for k=1 : length(Excell_sorted)-1
     
 end
 spaceLength=sum/divide_by;
-spaceLength=spaceLength*1.4;
+spaceLength=spaceLength*1.3;
 
 indexToWrite=1;
 
@@ -169,11 +176,17 @@ for k=1 : length(Excell_sorted)
              numFromInput = letterFromInput(r,c);
              numFromOutput = letterFromDataBase(r,c);
              
-             if (numFromInput == 0 && numFromOutput == 0) || (numFromInput ~= 0 && numFromOutput ~= 0)
-                tempMax = tempMax + 1;
-             end
-           end
+                 if (numFromInput == 0 && numFromOutput == 0) || (numFromInput ~= 0 && numFromOutput ~= 0)
+                      if (numFromInput == 0 && numFromOutput == 0)
+                          tempMax = tempMax + 2;
+                      else
+                     tempMax = tempMax + 1;
+                      end
+                 end
+             
+            end
        end
+      
        
        if tempMax > max
            max = tempMax;
@@ -211,9 +224,13 @@ for r=1:row
         if database(r,c)==19
             database(r,c)=17;
         end
+       % if database(r,c)==56
+       %     database(r,c)=0;
+       % end
         if database(r,c)==58
             database(r,c)=57;
         end
+         
         if database(r,c)==61
             database(r,c)=60;
         end
