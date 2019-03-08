@@ -33,7 +33,7 @@ for k=1 : length(bboxes)
             end
         end
      end
-    
+    A = medfilt2(A);
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
@@ -80,8 +80,8 @@ for k=1 : length(bboxes)
             end
         end
     end
-    %B=DictionaryCell(k, :);
     
+    A = medfilt2(A);
     temp = A;
     if currCenter(2)-range < firstYpos(2) && currCenter(2)+range > firstYpos(2)
     Excell(k,:)={A,size(A),round(currCenter(1)),firstYpos(2), round(currCenter(1))+ 1000* firstYpos(2)};
