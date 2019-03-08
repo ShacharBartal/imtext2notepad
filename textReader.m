@@ -37,7 +37,7 @@ for k=1 : length(bboxes)
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
-        ex =imread('ex7.jpeg');
+        ex =imread('ex4.jpeg');
         exBW=imbinarize(ex);        % making pic binary.
         exBW=exBW(:,:,1);           % making pic one dimentional.
         exBWinv=1.-exBW;            % inverting black and white.
@@ -143,7 +143,8 @@ Excell_sorted = sortrows(Excell,[4 3])
 
 indexToWrite=1;
 
-for k=1 : length(Excell_sorted)
+[a b] = size(Excell_sorted);
+for k=1 : a
     curLetterToWrite = Datacell(1,3);
     max=0;
     for j=1 : length(Datacell)
