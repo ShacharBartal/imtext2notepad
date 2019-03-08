@@ -104,7 +104,6 @@ switch user_response
         % no
     case 'Yes'
         
-
         exBW=imbinarize(handles.im_original); %making pic binary.
         exBW=exBW(:,:,1);     %making pic one dimentional.
         exBWinv=1.-exBW;      %inverting black and white.
@@ -112,18 +111,34 @@ switch user_response
 
         textReader;
             
-    
-        [filename, pathname] = uiputfile([path,'/*.txt'], 'Save as');
-        full= [pathname '\' filename];
-        save(full);
         
-        newNotePad = fopen(full, 'w');
+        
+        TheText = 'hello world';
+TheFile = fullfile(tempdir, 'TheTextFile.txt');
+fid = fopen(TheFile, 'w');
+if fid == -1; error('Cannot open file: %s', TheFile); end
+fprintf(fid, '%s\n', TheText);
+fclose(fid);
+        
+
+
+        Text="";
        
         for x=1 : length(str)
-            fprintf(newNotePad, string(str(1,x)));
+            
+            Text = strcat(Text, string(str(1,x)));
             
         end
-        fclose(newNotePad);            
+        
+        [fileName, pathname] = uiputfile([path,'/*.txt'], 'Save as');
+        
+        full= [pathname '\' fileName];
+        
+        save(full);
+        newNotePad = fopen(fileName, 'a');
+        
+        
+        
         
         
         
