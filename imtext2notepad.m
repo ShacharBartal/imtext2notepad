@@ -97,11 +97,13 @@ function ConvertToNotePad_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
+%confirm save
 user_response = savedlg('Title', 'Confirm Save');
 switch user_response
+    
     case {'No'}
         % no
+        
     case 'Yes'
         
 
@@ -110,13 +112,14 @@ switch user_response
         exBWinv=1.-exBW;      %inverting black and white.
         exBWlabel=bwlabel(exBWinv); %labeling all letters
 
-        textReader;
+        textReader; %call to our code
             
-    
+        % save as in path that user will choose
         [filename, pathname] = uiputfile([path,'/*.txt'], 'Save as');
         full= [pathname '\' filename];
         save(full);
         
+        %write text
         newNotePad = fopen(full, 'w');
        
         for x=1 : length(str)
