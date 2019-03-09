@@ -22,7 +22,7 @@ function varargout = imtext2notepad(varargin)
 
 % Edit the above text to modify the response to help imtext2notepad
 
-% Last Modified by GUIDE v2.5 03-Mar-2019 16:54:14
+% Last Modified by GUIDE v2.5 08-Mar-2019 15:35:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -104,6 +104,7 @@ switch user_response
         % no
     case 'Yes'
         
+
         exBW=imbinarize(handles.im_original); %making pic binary.
         exBW=exBW(:,:,1);     %making pic one dimentional.
         exBWinv=1.-exBW;      %inverting black and white.
@@ -111,14 +112,20 @@ switch user_response
 
         textReader;
             
+    
+        [filename, pathname] = uiputfile([path,'/*.txt'], 'Save as');
+        full= [pathname '\' filename];
+        save(full);
         
-        
-        [fileName, pathname] = uiputfile([path,'/*.txt'], 'Save as');
-        newNotePad = fopen(fileName, 'a');
+        newNotePad = fopen(full, 'w');
        
         for x=1 : length(str)
             fprintf(newNotePad, string(str(1,x)));
             
         end
-        fclose(newNotePad);
+        fclose(newNotePad);            
+        
+        
+        
+
 end

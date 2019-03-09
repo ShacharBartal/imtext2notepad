@@ -35,7 +35,7 @@ for k=1 : length(bboxes)
             end
         end
      end
-    
+ %   A=imopen(A,strel('disk',5));
     B=DictionaryCell(k, :);
     Datacell(k,:)={A,size(A),B(2)};
 end
@@ -87,6 +87,7 @@ for k=1 : length(bboxes)
             end
         end
     end
+   % A=imopen(A,strel('disk',5));
     %B=DictionaryCell(k, :);
     
     temp = A;
@@ -162,6 +163,7 @@ spaceLength=sum/divide_by;
 spaceLength=spaceLength*1.3;
 
 indexToWrite=1;
+
 
 for k=1 : length(Excell_sorted)
     curLetterToWrite = Datacell(1,3);
